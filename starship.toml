@@ -1,0 +1,203 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+format = """
+[](other2)\
+$os\
+[](fg:other2 bg:primary_dark)\
+$directory\
+[](fg:primary_dark bg:secondary1)\
+$git_branch\
+$git_status\
+[](fg:secondary1 bg:secondary2)\
+$c\
+$rust\
+$golang\
+$nodejs\
+$php\
+$java\
+$kotlin\
+$haskell\
+$python\
+[](fg:secondary2 bg:other3)\
+$docker_context\
+[](fg:other3 bg:primary_light)\
+$time\
+[ ](fg:primary_light)\
+$line_break$character"""
+
+palette = 'yum'
+
+[palettes.gruvbox_dark]
+color_fg0 = '#fbf1c7'
+color_bg1 = '#3c3836'
+color_bg3 = '#665c54'
+color_blue = '#458588'
+color_aqua = '#689d6a'
+color_green = '#98971a'
+color_orange = '#d65d0e'
+color_purple = '#b16286'
+color_red = '#cc241d'
+color_yellow = '#d79921'
+
+[palettes.yum]
+primary_light = '#57b2eb'
+primary_dark = '#192255'
+secondary1 = '#2f4083'
+secondary2 = '#4066bb'
+other1 = '#5b3952'
+other2 = '#925088'
+other3 = '#668c94'
+light_gray = '#b7b6d6'
+dark_gray = '#0a0c23'
+base = "#0a0c23"
+mantle = "#181825"
+crust = "#11111b"
+
+[palettes.catppuccin_mocha]
+rosewater = "#68BEED"
+flamingo = "#68BEED"
+pink = "#f5c2e7"
+orange = "#cba6f7"
+red = "#f38ba8"
+maroon = "#eba0ac"
+peach = "#1b388c"
+yellow = "#f9e2af"
+green = "#a6e3a1"
+teal = "#94e2d5"
+sky = "#89dceb"
+sapphire = "#74c7ec"
+blue = "#89b4fa"
+lavender = "#68BEED"
+text = "#cdd6f4"
+subtext1 = "#bac2de"
+subtext0 = "#a6adc8"
+overlay2 = "#9399b2"
+overlay1 = "#7f849c"
+overlay0 = "#6c7086"
+surface2 = "#585b70"
+surface1 = "#45475a"
+surface0 = "#313244"
+base = "#020426"
+mantle = "#181825"
+crust = "#11111b"
+
+[os]
+disabled = false
+style = "bg:other2 fg:light_gray"
+
+[os.symbols]
+Windows = "󰍲"
+Ubuntu = "󰕈"
+SUSE = ""
+Raspbian = "󰐿"
+Mint = "󰣭"
+Macos = ""
+Manjaro = "󰣇"
+Linux = "󰌽"
+Gentoo = "󰣨"
+Fedora = "󰣛"
+Alpine = ""
+Amazon = ""
+Android = ""
+Arch = "󰣇"
+Artix = "󰣇"
+CentOS = ""
+Debian = "󰣚"
+Redhat = "󱄛"
+RedHatEnterprise = "󱄛"
+
+[username]
+show_always = true
+style_user = "bg:surface0 fg:text"
+style_root = "bg:surface0 fg:text"
+format = '[ $user ]($style)'
+
+[directory]
+style = "fg:light_gray bg:primary_dark"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = "󰝚 "
+"Pictures" = " "
+"Developer" = "󰲋 "
+
+[git_branch]
+symbol = ""
+style = "bg:secondary1"
+format = '[[ $symbol $branch ](fg:light_gray bg:secondary1)]($style)'
+
+[git_status]
+style = "bg:secondary1"
+format = '[[($all_status$ahead_behind )](fg:light_gray bg:secondary1)]($style)'
+
+[nodejs]
+symbol = ""
+style = "bg:secondary2"
+format = '[[ $symbol( $version) ](fg:base bg:secondary2)]($style)'
+
+[c]
+symbol = " "
+style = "bg:secondary2"
+format = '[[ $symbol( $version) ](fg:base bg:secondary2)]($style)'
+
+[rust]
+symbol = ""
+style = "bg:secondary2"
+format = '[[ $symbol( $version) ](fg:base bg:secondary2)]($style)'
+
+[golang]
+symbol = ""
+style = "bg:secondary2"
+format = '[[ $symbol( $version) ](fg:base bg:secondary2)]($style)'
+
+[php]
+symbol = ""
+style = "bg:secondary2"
+format = '[[ $symbol( $version) ](fg:base bg:secondary2)]($style)'
+
+[java]
+symbol = " "
+style = "bg:secondary2"
+format = '[[ $symbol( $version) ](fg:base bg:secondary2)]($style)'
+
+[kotlin]
+symbol = ""
+style = "bg:secondary2"
+format = '[[ $symbol( $version) ](fg:base bg:secondary2)]($style)'
+
+[haskell]
+symbol = ""
+style = "bg:secondary2"
+format = '[[ $symbol( $version) ](fg:base bg:secondary2)]($style)'
+
+[python]
+symbol = ""
+style = "bg:secondary2"
+format = '[[ $symbol( $version) ](fg:base bg:secondary2)]($style)'
+
+[docker_context]
+symbol = ""
+style = "bg:mantle"
+format = '[[ $symbol( $context) ](fg:#83a598 bg:color_bg3)]($style)'
+
+[time]
+disabled = false
+time_format = "%R"
+style = "bg:primary_light"
+format = '[[  $time ](fg:mantle bg:primary_light)]($style)'
+
+[line_break]
+disabled = true
+
+[character]
+disabled = false
+success_symbol = '[](bold fg:green)'
+error_symbol = '[](bold fg:red)'
+vimcmd_symbol = '[](bold fg:creen)'
+vimcmd_replace_one_symbol = '[](bold fg:purple)'
+vimcmd_replace_symbol = '[](bold fg:purple)'
+vimcmd_visual_symbol = '[](bold fg:lavender)'
