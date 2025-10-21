@@ -12,6 +12,12 @@ yay -Sy brave-bin
 
 # Cliphist
 sudo pacman -Sy cliphist
+
+# Hyprshot
+sudo pacman -Sy hyprshot
+
+# Starship (pretty terminal)
+curl -sS https://starship.rs/install.sh | sh
 ```
 
 ## Install Dotfiles
@@ -24,6 +30,7 @@ cp -r ~/.config/. ~/dotfiles/
 mv ~/.config ~/.config.temp
 mv ~/dotfiles ~/.config
 ```
+
 ## TODOs
 - [ ] Write up what commands were used to install the things
 - [ ] Make an install script that handles all the specific programs
