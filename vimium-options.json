@@ -1,0 +1,74 @@
+{
+  "settingsVersion": "2.3",
+  "userDefinedLinkHintCss": "div > .vimiumHintMarker {\n/* linkhint boxes */\nbackground: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFF785),\n  color-stop(100%,#FFC542));\nborder: 1px solid #E3BE23;\nopacity: 0.6;\n}\n\ndiv > .vimiumHintMarker span {\n/* linkhint text */\ncolor: black;\nfont-weight: bold;\nfont-size: 12px;\n}\n\ndiv > .vimiumHintMarker > .matchingCharacter {\n}",
+  "exclusionRules": [
+    {
+      "passKeys": "",
+      "pattern": "https?://mail.google.com/*"
+    },
+    {
+      "passKeys": "dsr",
+      "pattern": "https?://music.youtube.com/*"
+    },
+    {
+      "passKeys": "d",
+      "pattern": "https?://rabbitstream.net/*"
+    },
+    {
+      "passKeys": "d",
+      "pattern": "https?://1832361.kaf.kaltura.com/*"
+    },
+    {
+      "passKeys": "d",
+      "pattern": "https?://gomoplayer.com/*"
+    },
+    {
+      "passKeys": "d",
+      "pattern": "https?://vidcloud9.org/*"
+    },
+    {
+      "passKeys": "d",
+      "pattern": "https?://diep.io/*"
+    },
+    {
+      "passKeys": "qwertyiuopasdfghjkl;zxcvbnm,.",
+      "pattern": "https?://www.typingtest.com/*"
+    },
+    {
+      "passKeys": "qwertyuiopasdfghjklzxcvbnm",
+      "pattern": "https?://localhost:8888/*"
+    },
+    {
+      "passKeys": "qwert6tasdfbzcxv",
+      "pattern": "https?://beta.deeeep.io/*"
+    },
+    {
+      "passKeys": "drs",
+      "pattern": "https?://ezto.mheducation.com/*"
+    },
+    {
+      "passKeys": "dsr",
+      "pattern": "https?://uvu.instructure.com/*"
+    },
+    {
+      "passKeys": "qwertyuiopasdfghjkl;zxcvbnm,",
+      "pattern": "https?://bitbucket.org/*"
+    },
+    {
+      "passKeys": "qwertyuiopasdfghjklzxcvbnm,OT",
+      "pattern": "https?://madebyevan.com/*"
+    },
+    {
+      "passKeys": "sdgrjklN,.1234567890",
+      "pattern": "https?://www.youtube.com/watch*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://www.twitch.tv/*"
+    },
+    {
+      "passKeys": "sdrgk",
+      "pattern": "https?://www.youtube.com/shorts/*"
+    }
+  ]
+}
