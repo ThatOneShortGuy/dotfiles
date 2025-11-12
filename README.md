@@ -9,6 +9,9 @@ sudo pacman -Sy needed git base-devel && git clone https:/aur.archlinux.org/yay.
 
 # Brave
 yay -Sy brave-bin
+
+# Cliphist
+sudo pacman -Sy cliphist
 ```
 
 ## Install Dotfiles
