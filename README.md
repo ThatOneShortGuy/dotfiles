@@ -21,11 +21,11 @@ sudo pacman -Sy needed git base-devel && git clone https:/aur.archlinux.org/yay.
 # Brave
 yay -Sy brave-bin
 
-# Cliphist
-sudo pacman -Sy cliphist
+# Pacman apps
+sudo pacman -Sy cliphist hyprshot pyenv fzf nvm
 
-# Hyprshot
-sudo pacman -Sy hyprshot
+# Rustup
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 # Starship (pretty terminal)
 curl -sS https://starship.rs/install.sh | sh
