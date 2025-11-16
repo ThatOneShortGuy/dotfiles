@@ -6,10 +6,15 @@ It probably isn't fully encompasing, but should handle most of the things I want
 ```sh
 # Retrieve files
 git clone --recurse-submodules https://github.com/ThatOneShortGuy/dotfiles.git ~/dotfiles/
+```
 
-# Copy existing config
+### Copy existing dotfiles in (optional)
+```sh
 cp -r ~/.config/. ~/dotfiles/
 mv ~/.config ~/.config.temp
+```
+
+```sh
 mv ~/dotfiles ~/.config
 ```
 
