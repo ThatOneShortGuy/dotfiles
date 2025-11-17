@@ -114,12 +114,16 @@ shopt -s histappend
 
 export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init - bash)"
 
 # Set up fzf key bindings and fuzzy completion
 eval "$(fzf --bash)"
 
+bind 'set show-all-if-ambiguous on'
+bind 'TAB:menu-complete'
+
 . "$HOME/.cargo/env"
 
 source /usr/share/nvm/init-nvm.sh
+eval "$(pyenv init - bash)"
 eval "$(starship init bash)"
+eval "$(zoxide init bash --cmd cd)"
