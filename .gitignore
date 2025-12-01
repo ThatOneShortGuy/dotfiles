@@ -24,4 +24,5 @@ discord
 Docker Desktop
 composer
 nextjs-nodejs
-uv-receipt.json
+uv
+monitors.conf
