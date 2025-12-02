@@ -109,7 +109,7 @@
     },
     "network": {
         "format-wifi": " {icon}",
-        "format-ethernet": "  ",
+        "format-ethernet": " 💻 ",
         "format-disconnected": "󰌙",
         "format-icons": [
             "󰤯 ",
