@@ -23,8 +23,8 @@ mv ~/dotfiles ~/.config
 # Installing yay
 sudo pacman -Sy needed git base-devel && git clone https:/aur.archlinux.org/yay.git && cd yay && makepkg -si && cd ..
 
-# Brave
-yay -Sy brave-bin
+# Brave and Hypremoji
+yay -Sy brave-bin hypremoji
 
 # Pacman apps
 sudo pacman -Sy cliphist hyprshot pyenv fzf nvm hyprpicker hyprlock
