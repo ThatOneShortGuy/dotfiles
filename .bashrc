@@ -112,6 +112,9 @@ shopt -s expand_aliases
 # Enable history appending instead of overwriting.  #139609
 shopt -s histappend
 
+# Add more paths
+export PATH=$PATH:~/.local/bin
+
 # Default sudoedit editor
 export SUDO_EDITOR=/usr/bin/nvim
 
