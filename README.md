@@ -28,7 +28,8 @@ yay -Sy brave-bin hypremoji
 
 # Pacman apps
 sudo pacman -Sy cliphist hyprshot pyenv fzf nvm hyprpicker \
-    hyprlock hyprpaper hypridle brightnessctl qt5-wayland qt6-wayland
+    hyprlock hyprpaper hypridle brightnessctl qt5-wayland qt6-wayland \
+    wireplumber xdg-desktop-portal-hyprland
 
 # Rustup
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
