@@ -27,7 +27,8 @@ sudo pacman -Sy needed git base-devel && git clone https:/aur.archlinux.org/yay.
 yay -Sy brave-bin hypremoji
 
 # Pacman apps
-sudo pacman -Sy cliphist hyprshot pyenv fzf nvm hyprpicker hyprlock
+sudo pacman -Sy cliphist hyprshot pyenv fzf nvm hyprpicker \
+    hyprlock hyprpaper hypridle brightnessctl
 
 # Rustup
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
