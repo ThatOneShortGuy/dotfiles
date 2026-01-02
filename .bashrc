@@ -133,3 +133,15 @@ source /usr/share/nvm/init-nvm.sh
 eval "$(pyenv init - bash)"
 eval "$(starship init bash)"
 eval "$(zoxide init bash --cmd cd)"
+
+# Optional Neovide usage
+nvim() {
+  if [[ -n "$DISPLAY" || -n "$WAYLAND_DISPLAY" ]] \
+     && command -v neovide >/dev/null 2>&1; then
+    neovide "$@" & disown
+  else
+    command nvim "$@"
+  fi
+}
+
+alias tnvim='command nvim'
