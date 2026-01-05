@@ -4,7 +4,7 @@ configuration {
     show-icons:      true;
     display-drun:    "";
     disable-history: false;
-    kb-cancel: "Escape,Control+g,Control+bracketleft,Super_L";
+    kb-cancel: "Escape,Control+g,Control+bracketleft";
 }
 
 * {
