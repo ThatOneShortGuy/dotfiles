@@ -30,7 +30,7 @@ paru -Sy brave-bin hypremoji lazygit
 sudo pacman -Sy cliphist hyprshot pyenv fzf nvm hyprpicker \
     hyprlock hyprpaper hypridle brightnessctl qt5-wayland qt6-wayland \
     wireplumber xdg-desktop-portal-hyprland neovide btop \
-    rofi thunar pavucontrol ffmpeg
+    rofi thunar pavucontrol ffmpeg fastfetch
 
 # Rustup
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
