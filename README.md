@@ -20,11 +20,11 @@ mv ~/dotfiles ~/.config
 
 ## Install Programs
 ```sh
-# Installing yay
-sudo pacman -Sy needed git base-devel && git clone https:/aur.archlinux.org/yay.git && cd yay && makepkg -si && cd ..
+# Installing paru
+sudo pacman -Sy needed git base-devel && git clone https:/aur.archlinux.org/paru.git && cd yay && makepkg -si && cd ..
 
 # Brave and Hypremoji
-yay -Sy brave-bin hypremoji
+paru -Sy brave-bin hypremoji lazygit
 
 # Pacman apps
 sudo pacman -Sy cliphist hyprshot pyenv fzf nvm hyprpicker \
