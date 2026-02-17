@@ -133,7 +133,21 @@ source /usr/share/nvm/init-nvm.sh
 eval "$(pyenv init - bash)"
 eval "$(starship init bash)"
 eval "$(zoxide init bash --cmd cd)"
-eval $(ssh-agent -s) # Start SSH agent because it doesn't start itself
+
+# Self-managed ssh-agent with a stable socket
+export SSH_AUTH_SOCK="$HOME/.ssh/agent.sock"
+
+# Start agent if socket missing or unusable
+if ! ssh-add -l >/dev/null 2>&1; then
+  # If a stale socket exists, remove it
+  [ -S "$SSH_AUTH_SOCK" ] || rm -f "$SSH_AUTH_SOCK"
+  eval "$(ssh-agent -a "$SSH_AUTH_SOCK" -s)" >/dev/null
+fi
+
+# Add keys if present
+for key in ~/.ssh/id_ed25519 ~/.ssh/id_rsa; do
+  [ -f "$key" ] && ssh-add -q "$key" 2>/dev/null
+done
 
 # Optional Neovide usage
 nvim() {
