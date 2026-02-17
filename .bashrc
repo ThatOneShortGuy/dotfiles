@@ -133,6 +133,7 @@ source /usr/share/nvm/init-nvm.sh
 eval "$(pyenv init - bash)"
 eval "$(starship init bash)"
 eval "$(zoxide init bash --cmd cd)"
+eval $(ssh-agent -s) # Start SSH agent because it doesn't start itself
 
 # Optional Neovide usage
 nvim() {
