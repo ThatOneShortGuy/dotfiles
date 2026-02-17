@@ -1,6 +1,6 @@
 {
-  "settingsVersion": "2.3",
-  "userDefinedLinkHintCss": "div > .vimiumHintMarker {\n/* linkhint boxes */\nbackground: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFF785),\n  color-stop(100%,#FFC542));\nborder: 1px solid #E3BE23;\nopacity: 0.6;\n}\n\ndiv > .vimiumHintMarker span {\n/* linkhint text */\ncolor: black;\nfont-weight: bold;\nfont-size: 12px;\n}\n\ndiv > .vimiumHintMarker > .matchingCharacter {\n}",
+  "settingsVersion": "2.3.1",
+  "userDefinedLinkHintCss": "div > .vimiumHintMarker {\n/* linkhint boxes */\nbackground: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFF785),\n  color-stop(100%,#FFC542));\nborder: 1px solid #E3BE23;\nopacity: 0.85;\n}\n\ndiv > .vimiumHintMarker span {\n/* linkhint text */\ncolor: black;\nfont-weight: bold;\nfont-size: 12px;\n}\n\ndiv > .vimiumHintMarker > .matchingCharacter {\n}",
   "exclusionRules": [
     {
       "passKeys": "",
@@ -69,6 +69,10 @@
     {
       "passKeys": "sdrgk",
       "pattern": "https?://www.youtube.com/shorts/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://profiler.firefox.com/*"
     }
   ]
 }
