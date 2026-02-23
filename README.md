@@ -21,13 +21,13 @@ mv ~/dotfiles ~/.config
 ## Install Programs
 ```sh
 # Installing paru
-sudo pacman -Sy needed git base-devel && git clone https:/aur.archlinux.org/paru.git && cd yay && makepkg -si && cd ..
+sudo pacman -Sy needed git base-devel && git clone https:/aur.archlinux.org/paru.git && cd paru && makepkg -si && cd ..
 
 # Brave and Hypremoji
 paru -Sy brave-bin hypremoji lazygit
 
 # Pacman apps
-sudo pacman -Sy cliphist hyprshot pyenv fzf nvm hyprpicker \
+paru -Sy cliphist hyprshot pyenv fzf nvm hyprpicker \
     hyprlock hyprpaper hypridle brightnessctl qt5-wayland qt6-wayland \
     wireplumber xdg-desktop-portal-hyprland neovide btop \
     rofi thunar pavucontrol ffmpeg fastfetch noto-fonts-emoji \
