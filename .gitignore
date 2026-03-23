@@ -40,3 +40,4 @@ lnav
 zoom*.conf
 QtProject.conf
 ngrok.yml
+QCachegrind.conf
