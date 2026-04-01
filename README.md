@@ -31,7 +31,8 @@ paru -Sy cliphist hyprshot pyenv fzf nvm hyprpicker \
     hyprlock hyprpaper hypridle brightnessctl qt5-wayland qt6-wayland \
     wireplumber xdg-desktop-portal-hyprland neovide btop \
     rofi thunar pavucontrol ffmpeg fastfetch noto-fonts-emoji \
-    noto-fonts-cjk
+    noto-fonts-cjk hypruler-bin grim slurp tesseract \
+    tesseract-data-eng
 
 # Rustup
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
