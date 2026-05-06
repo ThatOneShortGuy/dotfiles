@@ -3,14 +3,15 @@
   "IS_MAXIMIZED": false,
   "IS_MINIMIZED": false,
   "WINDOW_BOUNDS": {
-    "x": 7202,
-    "y": 524,
-    "width": 471,
-    "height": 509
+    "x": 8644,
+    "y": 7,
+    "width": 949,
+    "height": 1026
   },
   "SKIP_HOST_UPDATE": true,
   "offloadAdmControls": true,
   "enableHardwareAcceleration": true,
   "chromiumSwitches": {},
-  "asyncVideoInputDeviceInit": false
+  "asyncVideoInputDeviceInit": false,
+  "openH264Enabled": true
 }
