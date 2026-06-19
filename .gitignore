@@ -42,3 +42,6 @@ QtProject.conf
 ngrok.yml
 QCachegrind.conf
 opencode/package-lock.json
+zoom
+audacious
+intelephense
