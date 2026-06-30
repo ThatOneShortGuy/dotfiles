@@ -14,7 +14,6 @@
     "tmux",
     "rio",
     "neovide"
-  ]
-,
-  "current_pin_mode": "cursor_down"
+  ],
+  "current_pin_mode": "point"
 }
