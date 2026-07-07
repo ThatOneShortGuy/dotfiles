@@ -32,7 +32,7 @@ paru -Sy cliphist hyprshot pyenv fzf nvm hyprpicker \
     wireplumber xdg-desktop-portal-hyprland neovide btop \
     rofi thunar pavucontrol ffmpeg fastfetch noto-fonts-emoji \
     noto-fonts-cjk hypruler-bin grim slurp tesseract \
-    tesseract-data-eng tree-sitter-cli
+    tesseract-data-eng tree-sitter-cli less
 
 # Rustup
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
