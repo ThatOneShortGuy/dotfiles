@@ -117,7 +117,8 @@
             "󰤢 ",
             "󰤢 ",
             "󰤨 "
-        ]
+        ],
+        "on-click": "kitty --class impala impala"
     },
     "battery": {
         "states": {
