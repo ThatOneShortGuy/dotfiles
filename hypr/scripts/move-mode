@@ -1,0 +1,20 @@
+#!/bin/sh
+
+mode=$1
+border=$2
+gaps_in=$3
+gaps_out=$4
+state_file=${XDG_RUNTIME_DIR:-/tmp}/hypr-move-workspace
+
+hyprctl keyword general:col.active_border "$border" >/dev/null
+
+if [ "$mode" = enter ]; then
+    workspace=$(hyprctl activeworkspace -j | jq -r .id)
+    printf '%s\n' "$workspace" > "$state_file"
+elif ! read -r workspace < "$state_file" 2>/dev/null; then
+    exit 0
+else
+    rm -f "$state_file"
+fi
+
+hyprctl keyword workspace "$workspace, gapsin:$gaps_in, gapsout:$gaps_out" >/dev/null
