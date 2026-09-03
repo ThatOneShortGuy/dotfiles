@@ -27,12 +27,12 @@ sudo pacman -Sy needed git base-devel && git clone https:/aur.archlinux.org/paru
 paru -Sy brave-bin hypremoji lazygit
 
 # Pacman apps
-paru -Sy cliphist hyprshot pyenv fzf nvm hyprpicker \
+paru -Sy --noconfirm cliphist hyprshot pyenv fzf nvm hyprpicker \
     hyprlock hyprpaper hypridle brightnessctl qt5-wayland qt6-wayland \
     wireplumber xdg-desktop-portal-hyprland neovide btop \
     rofi thunar pavucontrol ffmpeg fastfetch noto-fonts-emoji \
     noto-fonts-cjk hypruler-bin grim slurp tesseract \
-    tesseract-data-eng tree-sitter-cli less impala satty
+    tesseract-data-eng tree-sitter-cli less impala satty hyprmoncfg
 
 # Rustup
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
