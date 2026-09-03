@@ -1,0 +1,14 @@
+#!/bin/sh
+
+screenshot=$1
+[ -f "$screenshot" ] || exit 1
+
+action=$(notify-send \
+    --app-name=Hyprshot \
+    --icon="$screenshot" \
+    --expire-time=5000 \
+    --action=edit="Edit in Satty" \
+    "Screenshot saved" \
+    "Image saved in $screenshot and copied to the clipboard.")
+
+[ "$action" = edit ] && exec satty --filename "$screenshot" --output-filename "$screenshot"
