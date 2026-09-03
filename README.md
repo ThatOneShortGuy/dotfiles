@@ -42,6 +42,9 @@ curl -sS https://starship.rs/install.sh | sh
 
 # Zoxide
 curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+
+# Enable hyprmoncfg daemon
+systemctl --user enable --now hyprmoncfgd.service
 ```
 
 ## Use .bashrc
