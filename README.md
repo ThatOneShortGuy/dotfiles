@@ -52,6 +52,15 @@ systemctl --user enable --now hyprmoncfgd.service
 rm ~/.bashrc && ln ~/.config/.bashrc ~/.bashrc
 ```
 
+## Use Claude Code settings
+Claude Code reads its settings from `~/.claude`, so symlink the tracked files there.
+The notification hooks in `settings.json` need `notify-send` (libnotify) and `jq`.
+```sh
+mkdir -p ~/.claude
+ln -sf ~/.config/claude/settings.json ~/.claude/settings.json
+ln -sf ~/.config/claude/keybindings.json ~/.claude/keybindings.json
+```
+
 
 ## TODOs
 - [ ] Write up what commands were used to install the things
