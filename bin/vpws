@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # vpws — named git worktrees ("workspaces") for ~/viewpoint.
 #
-#   vpws new <name> [branch]   create worktree, link local files, open tabs
+#   vpws new <name> [branch] [--no-open]
+#                              create worktree, link local files, open tabs
 #   vpws open <name|main>      open (or focus) the kitty tabs for a workspace
-#   vpws use <name|main>       point the docker app/scheduler at a workspace
+#   vpws use <name|main>       point docker + `composer run dev` at a workspace
+#   vpws dev                   restart `composer run dev` for the active workspace
 #   vpws ls                    list workspaces
 #   vpws link <name>           (re)create the symlinks to ~/viewpoint
 #   vpws rm <name> [--force]   close tabs and remove the worktree (keeps branch)
@@ -14,6 +16,7 @@ WS_ROOT="$HOME/viewpoint-ws"
 ACTIVE_FILE="$WS_ROOT/.active"
 LINKS_COMPOSE="$WS_ROOT/.compose.links.yml"
 COMPOSE_PROJECT="viewpoint"
+DEV_TAB="vp:dev"
 
 # Gitignored / local-only paths symlinked from $MAIN into every workspace.
 LINKS=(
@@ -29,7 +32,7 @@ LINKS=(
 
 # Tabs opened per workspace: "role:command".
 TABS=(
-    "nvim:nvim ."
+    "nvim:tnvim ."
     "claude:claude"
 )
 
@@ -37,7 +40,7 @@ die() { echo "vpws: $*" >&2; exit 1; }
 warn() { echo "vpws: $*" >&2; }
 
 usage() {
-    sed -n '2,9p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,11p' "$0" | sed 's/^# \{0,1\}//'
     exit "${1:-0}"
 }
 
@@ -104,6 +107,9 @@ cmd_link() {
         mkdir -p "$(dirname "$dst")"
         ln -s "$src" "$dst"
     done
+    # `composer run dev` tails this; tail -f fails if it doesn't exist yet.
+    mkdir -p "$dir/storage/logs"
+    touch "$dir/storage/logs/laravel.log"
 }
 
 cmd_open() {
@@ -128,7 +134,16 @@ cmd_open() {
 }
 
 cmd_new() {
-    local name=$1 branch=${2:-$1} dir base
+    local open=1 args=() arg
+    for arg in "$@"; do
+        case $arg in
+            --no-open) open=0 ;;
+            -*) die "unknown flag '$arg'" ;;
+            *) args+=("$arg") ;;
+        esac
+    done
+    [[ ${#args[@]} -ge 1 && ${#args[@]} -le 2 ]] || usage 1
+    local name=${args[0]} branch=${args[1]:-${args[0]}} dir base
     validate_name "$name"
     dir=$(ws_dir "$name")
     [[ ! -e $dir ]] || die "$dir already exists"
@@ -146,7 +161,7 @@ cmd_new() {
 
     git -C "$dir" submodule update --init --quiet
     cmd_link "$name"
-    cmd_open "$name"
+    if ((open)); then cmd_open "$name"; fi
 }
 
 write_links_compose() {
@@ -163,9 +178,46 @@ services:
 EOF
 }
 
+# Stop any `composer run dev` (ours or started by hand) by sending SIGINT to its
+# process group, like Ctrl+C would, then close our dev tab.
+stop_dev() {
+    local pids pgids pgid i
+    pids=$(pgrep -f '/composer run dev' || true)
+    if [[ -n $pids ]]; then
+        pgids=$(ps -o pgid= -p "${pids//$'\n'/,}" | tr -d ' ' | sort -u)
+        for pgid in $pgids; do kill -INT -- "-$pgid" 2>/dev/null || true; done
+        for ((i = 0; i < 20; i++)); do
+            pgrep -f '/composer run dev' >/dev/null || break
+            sleep 0.5
+        done
+        for pgid in $pgids; do kill -TERM -- "-$pgid" 2>/dev/null || true; done
+    fi
+    if in_kitty; then
+        kitten @ close-tab --match "title:^${DEV_TAB}\$" 2>/dev/null || true
+    fi
+}
+
+start_dev() {
+    local dir=$1
+    if ! in_kitty; then
+        echo "not in kitty; start it yourself: cd $dir && composer run dev"
+        return
+    fi
+    kitten @ launch --type=tab --keep-focus --tab-title "$DEV_TAB" --cwd "$dir" \
+        bash -ic "composer run dev; exec bash" >/dev/null
+}
+
+cmd_dev() {
+    local dir
+    dir=$(require_ws "$(active)")
+    stop_dev
+    start_dev "$dir"
+}
+
 cmd_use() {
     local name=$1 dir
     dir=$(require_ws "$name")
+    stop_dev
     local files=(-f "$dir/docker-compose.yml")
     [[ -e $dir/docker-compose.override.yml ]] && files+=(-f "$dir/docker-compose.override.yml")
     if [[ $name != main ]]; then
@@ -176,6 +228,7 @@ cmd_use() {
         up -d app scheduler
     mkdir -p "$WS_ROOT"
     echo "$name" >"$ACTIVE_FILE"
+    start_dev "$dir"
     echo "active: $name -> http://localhost:8082"
 }
 
@@ -226,6 +279,7 @@ case $sub in
     new) [[ $# -ge 1 ]] || usage 1; cmd_new "$@" ;;
     open) [[ $# -eq 1 ]] || usage 1; cmd_open "$1" ;;
     use) [[ $# -eq 1 ]] || usage 1; cmd_use "$1" ;;
+    dev) cmd_dev ;;
     ls) cmd_ls ;;
     link) [[ $# -eq 1 ]] || usage 1; validate_name "$1"; cmd_link "$1" ;;
     rm) [[ $# -ge 1 ]] || usage 1; cmd_rm "$@" ;;
