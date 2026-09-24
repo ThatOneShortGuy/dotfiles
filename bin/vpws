@@ -7,7 +7,7 @@
 #   vpws use <name|main>       point docker + `composer run dev` at a workspace
 #   vpws dev                   restart `composer run dev` for the active workspace
 #   vpws ls                    list workspaces
-#   vpws link <name>           (re)create the symlinks to ~/viewpoint
+#   vpws link <name>           (re)create the symlinks to ~/viewpoint + vendor/
 #   vpws rm <name> [--force]   close tabs and remove the worktree (keeps branch)
 set -euo pipefail
 
@@ -19,11 +19,13 @@ COMPOSE_PROJECT="viewpoint"
 DEV_TAB="vp:dev"
 
 # Gitignored / local-only paths symlinked from $MAIN into every workspace.
+# vendor/ is deliberately NOT shared: composer writes paths relative to the real
+# vendor dir into its autoloader, so a shared vendor points at whichever
+# workspace last ran composer. Each workspace gets its own (see ensure_vendor).
 LINKS=(
     .env
     docker-compose.override.yml
     docker/php-fpm-pool.conf
-    vendor
     node_modules
     custom_scripts
     app/Console/Commands/Private
@@ -107,9 +109,19 @@ cmd_link() {
         mkdir -p "$(dirname "$dst")"
         ln -s "$src" "$dst"
     done
+    ensure_vendor "$dir"
     # `composer run dev` tails this; tail -f fails if it doesn't exist yet.
     mkdir -p "$dir/storage/logs"
     touch "$dir/storage/logs/laravel.log"
+}
+
+# Give the workspace its own vendor/, replacing an old shared symlink.
+ensure_vendor() {
+    local dir=$1
+    [[ -L $dir/vendor ]] && rm "$dir/vendor"
+    [[ -d $dir/vendor ]] && return
+    echo "vpws: composer install in $dir"
+    (cd "$dir" && composer install --no-interaction)
 }
 
 cmd_open() {
