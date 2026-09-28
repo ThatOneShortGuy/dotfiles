@@ -2,19 +2,6 @@
   "permissions": {
     "defaultMode": "auto"
   },
-  "model": "opus[1m]",
-  "enabledPlugins": {
-    "rust-analyzer-lsp@claude-plugins-official": false
-  },
-  "awaySummaryEnabled": false,
-  "theme": "dark",
-  "editorMode": "vim",
-  "verbose": true,
-  "preferredNotifChannel": "notifications_disabled",
-  "agentPushNotifEnabled": false,
-  "worktree": {
-    "bgIsolation": "none"
-  },
   "hooks": {
     "Stop": [
       {
@@ -36,5 +23,18 @@
         ]
       }
     ]
-  }
+  },
+  "worktree": {
+    "bgIsolation": "none"
+  },
+  "enabledPlugins": {
+    "rust-analyzer-lsp@claude-plugins-official": false
+  },
+  "awaySummaryEnabled": false,
+  "theme": "dark",
+  "editorMode": "vim",
+  "verbose": true,
+  "preferredNotifChannel": "notifications_disabled",
+  "switchModelsOnFlag": false,
+  "agentPushNotifEnabled": false
 }

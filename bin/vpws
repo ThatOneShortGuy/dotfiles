@@ -9,6 +9,8 @@
 #   vpws ls                    list workspaces
 #   vpws link <name>           (re)create the symlinks to ~/viewpoint + vendor/
 #   vpws rm <name> [--force]   close tabs and remove the worktree (keeps branch)
+#   vpws clean [-n] [name...]  remove workspaces + branches whose PR is closed/merged
+#                              and whose remote branch is deleted (-n: dry run)
 set -euo pipefail
 
 MAIN="$HOME/viewpoint"
@@ -42,7 +44,7 @@ die() { echo "vpws: $*" >&2; exit 1; }
 warn() { echo "vpws: $*" >&2; }
 
 usage() {
-    sed -n '2,11p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,13p' "$0" | sed 's/^# \{0,1\}//'
     exit "${1:-0}"
 }
 
@@ -171,6 +173,7 @@ cmd_new() {
         git -C "$MAIN" worktree add --no-track -b "$branch" "$dir" "$base"
     fi
 
+    git -C "$MAIN" config "vpws.$name.branch" "$branch"
     git -C "$dir" submodule update --init --quiet
     cmd_link "$name"
     if ((open)); then cmd_open "$name"; fi
@@ -274,7 +277,123 @@ cmd_rm() {
     done
     # --force is always needed: git refuses to remove worktrees with submodules.
     git -C "$MAIN" worktree remove --force "$dir"
+    git -C "$MAIN" config --unset "vpws.$name.branch" || true
     echo "removed $name (branch kept)"
+}
+
+# The branch a workspace was created for. Workspaces can be switched to other
+# branches later, so clean must not rely on the current checkout alone. Falls
+# back to the first "checkout: moving from X" in the worktree's reflog, then to
+# the current branch.
+orig_branch() {
+    local name=$1 dir b
+    dir=$(ws_dir "$name")
+    if b=$(git -C "$MAIN" config --get "vpws.$name.branch"); then
+        echo "$b"
+        return
+    fi
+    b=$(git -C "$dir" reflog show --format=%gs HEAD 2>/dev/null |
+        sed -n 's/^checkout: moving from \([^ ]*\) to .*/\1/p' | tail -1)
+    echo "${b:-$(git -C "$dir" branch --show-current)}"
+}
+
+# Prints why <branch> is safe to delete, or fails with the reason to keep it:
+# its remote branch is gone, it had a (non-fork) PR, none are open, and the
+# local tip is contained in the latest PR's head.
+branch_reason() {
+    local branch=$1 owner prs pr state head
+    [[ -n $branch ]] || { echo "detached HEAD"; return 1; }
+    git -C "$MAIN" show-ref --verify --quiet "refs/heads/$branch" ||
+        { echo "no local branch '$branch'"; return 1; }
+    if [[ -n $(git -C "$MAIN" ls-remote --heads origin "refs/heads/$branch") ]]; then
+        echo "remote branch '$branch' still exists"
+        return 1
+    fi
+    owner=$(cd "$MAIN" && gh repo view --json owner -q .owner.login)
+    # PRs from this repo (not forks) whose head is this branch, newest first.
+    prs=$(cd "$MAIN" && gh pr list --state all --head "$branch" --limit 20 \
+        --json number,state,headRefOid,headRepositoryOwner \
+        -q "[.[] | select(.headRepositoryOwner.login == \"$owner\")] | sort_by(-.number)
+            | .[] | \"\\(.number) \\(.state) \\(.headRefOid)\"")
+    [[ -n $prs ]] || { echo "no PR for '$branch'"; return 1; }
+    if grep -q ' OPEN ' <<<"$prs"; then
+        echo "PR for '$branch' still open"
+        return 1
+    fi
+    read -r pr state head <<<"$prs"
+    # Anything committed locally after the PR's last push would be lost.
+    if ! git -C "$MAIN" merge-base --is-ancestor "refs/heads/$branch" "$head" 2>/dev/null; then
+        echo "local '$branch' has commits not in PR #$pr"
+        return 1
+    fi
+    echo "'$branch' PR #$pr ${state,,}, remote deleted"
+}
+
+delete_branch() {
+    # -D: squash/rebase merges leave the branch unmerged from git's view.
+    if git -C "$MAIN" branch -D "$1" >/dev/null; then
+        echo "       deleted branch '$1'"
+    else
+        warn "failed to delete branch '$1'"
+    fi
+}
+
+clean_one() {
+    local name=$1 dry=$2 dir cur orig reason orig_ok=0 orig_reason=
+    dir=$(ws_dir "$name")
+    cur=$(git -C "$dir" branch --show-current)
+    orig=$(orig_branch "$name")
+    if [[ -n $orig && $orig != "$cur" ]] && orig_reason=$(branch_reason "$orig"); then
+        orig_ok=1
+    fi
+
+    if ! reason=$(branch_reason "$cur"); then
+        :
+    elif [[ -n $(git -C "$dir" status --porcelain) ]]; then
+        reason="uncommitted changes"
+    elif [[ $(active) == "$name" ]]; then
+        reason="active docker workspace (vpws use main first)"
+    else
+        printf 'clean  %-24s %s\n' "$name" "$reason"
+        ((orig_ok)) && printf '       %-24s %s\n' "" "$orig_reason"
+        ((dry)) && return
+        # Subshell so a failure (die) skips this workspace instead of aborting.
+        if ! (cmd_rm "$name" >/dev/null); then
+            warn "failed to remove $name"
+            return
+        fi
+        echo "       removed workspace"
+        delete_branch "$cur"
+        ((orig_ok)) && delete_branch "$orig"
+        return
+    fi
+
+    printf 'keep   %-24s %s\n' "$name" "$reason"
+    if ((orig_ok)); then
+        # The workspace moved on to another branch; its original one can still go.
+        printf '       %-24s %s\n' "" "$orig_reason"
+        ((dry)) || delete_branch "$orig"
+    fi
+}
+
+cmd_clean() {
+    local dry=0 names=() name
+    for arg in "$@"; do
+        case $arg in
+            -n | --dry-run) dry=1 ;;
+            -*) die "unknown flag '$arg'" ;;
+            *) names+=("$arg") ;;
+        esac
+    done
+    if ((${#names[@]} == 0)); then
+        mapfile -t names < <(_names | grep -vx main)
+    fi
+    git -C "$MAIN" fetch --quiet --prune origin
+    for name in "${names[@]}"; do
+        validate_name "$name"
+        require_ws "$name" >/dev/null
+        clean_one "$name" "$dry"
+    done
 }
 
 _names() {
@@ -295,6 +414,7 @@ case $sub in
     ls) cmd_ls ;;
     link) [[ $# -eq 1 ]] || usage 1; validate_name "$1"; cmd_link "$1" ;;
     rm) [[ $# -ge 1 ]] || usage 1; cmd_rm "$@" ;;
+    clean) cmd_clean "$@" ;;
     _names) _names ;;
     -h | --help | help) usage ;;
     *) usage 1 ;;
