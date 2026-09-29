@@ -354,26 +354,29 @@ clean_one() {
     elif [[ $(active) == "$name" ]]; then
         reason="active docker workspace (vpws use main first)"
     else
+        # Explicit ifs + `return 0`: a bare `return` after a false `((x)) &&`
+        # returns 1, and set -e would then abort the whole clean loop.
         printf 'clean  %-24s %s\n' "$name" "$reason"
-        ((orig_ok)) && printf '       %-24s %s\n' "" "$orig_reason"
-        ((dry)) && return
+        if ((orig_ok)); then printf '       %-24s %s\n' "" "$orig_reason"; fi
+        if ((dry)); then return 0; fi
         # Subshell so a failure (die) skips this workspace instead of aborting.
         if ! (cmd_rm "$name" >/dev/null); then
             warn "failed to remove $name"
-            return
+            return 0
         fi
         echo "       removed workspace"
         delete_branch "$cur"
-        ((orig_ok)) && delete_branch "$orig"
-        return
+        if ((orig_ok)); then delete_branch "$orig"; fi
+        return 0
     fi
 
     printf 'keep   %-24s %s\n' "$name" "$reason"
     if ((orig_ok)); then
         # The workspace moved on to another branch; its original one can still go.
         printf '       %-24s %s\n' "" "$orig_reason"
-        ((dry)) || delete_branch "$orig"
+        if ((!dry)); then delete_branch "$orig"; fi
     fi
+    return 0
 }
 
 cmd_clean() {
