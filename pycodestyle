@@ -1,0 +1,3 @@
+[pycodestyle]
+# pycodestyle's default ignore list plus E501 (line too long); setting `ignore` replaces the defaults.
+ignore = E121,E123,E126,E226,E24,E704,W503,W504,E501

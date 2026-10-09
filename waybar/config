@@ -118,7 +118,7 @@
             "󰤢 ",
             "󰤨 "
         ],
-        "on-click": "kitty --class impala impala"
+        "on-click": "kitty --class nmtui nmtui connect"
     },
     "battery": {
         "states": {

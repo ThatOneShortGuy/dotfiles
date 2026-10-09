@@ -239,8 +239,10 @@ cmd_use() {
         write_links_compose
         files+=(-f "$LINKS_COMPOSE")
     fi
-    docker compose -p "$COMPOSE_PROJECT" --project-directory "$dir" "${files[@]}" \
-        up -d app scheduler
+    # Whole stack, not just app/scheduler: db/redis/search are shared and their
+    # config is identical across workspaces, so compose leaves them running but
+    # starts any that are down (search has no restart policy).
+    docker compose -p "$COMPOSE_PROJECT" --project-directory "$dir" "${files[@]}" up -d
     mkdir -p "$WS_ROOT"
     echo "$name" >"$ACTIVE_FILE"
     start_dev "$dir"

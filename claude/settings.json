@@ -36,5 +36,6 @@
   "verbose": true,
   "preferredNotifChannel": "notifications_disabled",
   "switchModelsOnFlag": false,
-  "agentPushNotifEnabled": false
+  "agentPushNotifEnabled": false,
+  "tui": "fullscreen"
 }
