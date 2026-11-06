@@ -254,14 +254,64 @@ cmd_use() {
     echo "active: $name -> http://localhost:8082"
 }
 
+# Fills the assoc array named $1 with "branch -> number state" for the newest
+# non-fork PR per head branch (state: OPEN, DRAFT, MERGED or CLOSED). Fails
+# quietly (empty array) when gh is missing, unauthenticated or offline.
+load_prs() {
+    local -n _prs=$1
+    local branch num state draft
+    command -v gh >/dev/null || return 0
+    while IFS=$'\t' read -r branch num state draft; do
+        [[ $state == OPEN && $draft == true ]] && state=DRAFT
+        _prs[$branch]="$num $state"
+    done < <(cd "$MAIN" && timeout 5 gh pr list --state all --limit 200 \
+        --json number,state,isDraft,headRefName,isCrossRepository \
+        -q '[.[] | select(.isCrossRepository | not)] | sort_by(.number) | .[]
+            | [.headRefName, .number, .state, .isDraft] | @tsv' 2>/dev/null || true)
+}
+
+# Nerd Font octicon + color for a PR state.
+pr_symbol() {
+    case $1 in
+        OPEN) printf '\e[32m' ;;   # git-pull-request, green
+        DRAFT) printf '\e[90m' ;;  # git-pull-request-draft, gray
+        MERGED) printf '\e[35m' ;; # git-merge, purple
+        CLOSED) printf '\e[31m' ;; # git-pull-request-closed, red
+    esac
+}
+
 cmd_ls() {
-    local cur dir name mark
+    local cur dir name mark branch pr num state color=0 nw=0 bw=0 i
+    local names=() branches=()
+    local -A prs=()
+    [[ -t 1 ]] && color=1
     cur=$(active)
-    while IFS= read -r name; do
-        dir=$(ws_dir "$name")
+    mapfile -t names < <(_names)
+    for name in "${names[@]}"; do
+        branches+=("$(git -C "$(ws_dir "$name")" branch --show-current 2>/dev/null)")
+        ((${#name} > nw)) && nw=${#name}
+        ((${#branches[-1]} > bw)) && bw=${#branches[-1]}
+    done
+    load_prs prs
+    for i in "${!names[@]}"; do
+        name=${names[i]}
+        branch=${branches[i]}
         [[ $name == "$cur" ]] && mark='*' || mark=' '
-        printf '%s %-24s %s\n' "$mark" "$name" "$(git -C "$dir" branch --show-current 2>/dev/null)"
-    done < <(_names)
+        pr=
+        if [[ -n $branch && -n ${prs[$branch]:-} ]]; then
+            read -r num state <<<"${prs[$branch]}"
+            if ((color)); then
+                pr="$(pr_symbol "$state") #$num"$'\e[0m'
+            else
+                pr="#$num ${state,,}"
+            fi
+        fi
+        if [[ -n $pr ]]; then
+            printf "%s %-${nw}s  %-${bw}s  %s\n" "$mark" "$name" "$branch" "$pr"
+        else
+            printf "%s %-${nw}s  %s\n" "$mark" "$name" "$branch"
+        fi
+    done
 }
 
 cmd_rm() {
