@@ -90,6 +90,13 @@ ensure_excludes() {
 }
 
 cmd_link() {
+    local dir
+    dir=$(link_files "$1")
+    ensure_vendor "$dir"
+}
+
+# Symlink LINKS into the workspace; prints its dir. Leaves vendor/ alone.
+link_files() {
     local name=$1 dir src dst
     dir=$(require_ws "$name")
     ensure_excludes
@@ -116,10 +123,10 @@ cmd_link() {
         mkdir -p "$(dirname "$dst")"
         ln -s "$src" "$dst"
     done
-    ensure_vendor "$dir"
     # `composer run dev` tails this; tail -f fails if it doesn't exist yet.
     mkdir -p "$dir/storage/logs"
     touch "$dir/storage/logs/laravel.log"
+    echo "$dir"
 }
 
 # Give the workspace its own vendor/, replacing an old shared symlink.
@@ -180,8 +187,11 @@ cmd_new() {
 
     git -C "$MAIN" config "vpws.$name.branch" "$branch"
     git -C "$dir" submodule update --init --quiet
-    cmd_link "$name"
+    # Open the tabs before composer install so work can start right away; the
+    # install runs here while the new tabs have focus.
+    dir=$(link_files "$name")
     if ((open)); then cmd_open "$name"; fi
+    ensure_vendor "$dir"
 }
 
 write_links_compose() {
