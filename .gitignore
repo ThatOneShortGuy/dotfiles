@@ -53,3 +53,7 @@ hyprmoncfg
 hyprmoncfg-monitors.conf
 arduino-ide
 rclone
+qquickfiledialog.conf
+tmp/
+browser-harness
+*.dat

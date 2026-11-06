@@ -1,1 +1,4 @@
 rclone-google-drive.service
+hermes*
+sentry*
+slack*

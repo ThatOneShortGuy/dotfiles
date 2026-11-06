@@ -66,6 +66,11 @@ require_ws() {
     local dir
     dir=$(ws_dir "$1")
     [[ -d $dir ]] || die "no workspace '$1' at $dir"
+    # Not `_names | grep -q`: grep exits on the first match, and with pipefail the
+    # resulting SIGPIPE in _names reads as "not found".
+    local names
+    names=$(_names)
+    grep -qxF -- "$1" <<<"$names" || die "$dir is not a git worktree"
     echo "$dir"
 }
 
@@ -252,13 +257,11 @@ cmd_use() {
 cmd_ls() {
     local cur dir name mark
     cur=$(active)
-    for dir in "$MAIN" "$WS_ROOT"/*/; do
-        dir=${dir%/}
-        [[ -d $dir ]] || continue
-        if [[ $dir == "$MAIN" ]]; then name=main; else name=$(basename "$dir"); fi
+    while IFS= read -r name; do
+        dir=$(ws_dir "$name")
         [[ $name == "$cur" ]] && mark='*' || mark=' '
         printf '%s %-24s %s\n' "$mark" "$name" "$(git -C "$dir" branch --show-current 2>/dev/null)"
-    done
+    done < <(_names)
 }
 
 cmd_rm() {
@@ -401,11 +404,16 @@ cmd_clean() {
     done
 }
 
+# Workspaces are the git worktrees directly under $WS_ROOT. Other folders kept
+# there (notes, scratch) are ignored.
 _names() {
+    local path
     echo main
-    for d in "$WS_ROOT"/*/; do
-        if [[ -d $d ]]; then basename "$d"; fi
-    done
+    git -C "$MAIN" worktree list --porcelain |
+        sed -n 's/^worktree //p' |
+        while IFS= read -r path; do
+            if [[ $(dirname "$path") == "$WS_ROOT" && -d $path ]]; then basename "$path"; fi
+        done
 }
 
 [[ $# -ge 1 ]] || usage 1
