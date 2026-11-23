@@ -1,0 +1,30 @@
+[Default Applications]
+application/octet-stream=mousepad.desktop
+application/x-gettext-translation=mousepad.desktop
+application/xml=mousepad.desktop
+application/x-wine-extension-ini=mousepad.desktop
+image/gif=viewnior.desktop;gimp.desktop
+image/gif=viewnior.desktop;gimp.desktop
+image/jpeg=viewnior.desktop;gimp.desktop
+image/png=viewnior.desktop;gimp.desktop
+text/plain=mousepad.desktop
+video/mp4=vlc.desktop
+video/ogg=vlc.desktop
+video/x-flv=vlc.desktop
+video/x-ms-wmv=vlc.desktop
+video/x-ogm+ogg=vlc.desktop
+video/x-theora+ogg=vlc.desktop
+text/html=brave-browser.desktop
+x-scheme-handler/http=brave-browser.desktop
+x-scheme-handler/https=brave-browser.desktop
+x-scheme-handler/about=brave-browser.desktop
+x-scheme-handler/unknown=brave-browser.desktop
+x-scheme-handler/bruno=bruno.desktop
+x-scheme-handler/slack=slack.desktop
+x-scheme-handler/claude-cli=claude-code-url-handler.desktop
+application/pdf=brave-browser.desktop
+
+[Added Associations]
+text/x-log=neovide.desktop;
+image/png=gimp.desktop;
+application/pdf=libreoffice-draw.desktop;

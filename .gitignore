@@ -14,7 +14,6 @@ qt5ct
 xfce4
 volumeicon
 manjaro-hello.json
-mimeapps.list
 Thunar
 Kvantum
 pamac
@@ -57,3 +56,4 @@ qquickfiledialog.conf
 tmp/
 browser-harness
 *.dat
+Hermes/

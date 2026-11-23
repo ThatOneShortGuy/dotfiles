@@ -31,11 +31,11 @@
     "rust-analyzer-lsp@claude-plugins-official": false
   },
   "awaySummaryEnabled": false,
+  "tui": "fullscreen",
   "theme": "dark",
   "editorMode": "vim",
   "verbose": true,
   "preferredNotifChannel": "notifications_disabled",
   "switchModelsOnFlag": false,
-  "agentPushNotifEnabled": false,
-  "tui": "fullscreen"
+  "agentPushNotifEnabled": false
 }
